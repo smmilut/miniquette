@@ -1,0 +1,8 @@
+{
+  "esversion": 6,
+  "browser" : true,
+  "devel": true,
+  "globals": {
+    "Paho": false
+  }
+}

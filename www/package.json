@@ -1,0 +1,10 @@
+{
+  "name": "miniquette",
+  "version": "1.0.0",
+  "description": "display MQTT data from websocket",
+  "author": "smmilut",
+  "license": "MIT",
+  "dependencies": {
+    "paho-mqtt": "^1.1.0"
+  }
+}

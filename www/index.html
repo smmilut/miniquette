@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>miniquette</title>
+    <meta name="description" content="display MQTT data from websocket">
+    <link href="sanitize.css" rel="stylesheet">
+    <link href="theme_common.css" rel="stylesheet">
+    <link href="miniquette.css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="wrapper">
+      <header id="title" class="box">
+        <h1>miniquette</h1>
+        <p>display MQTT data from websocket</p>
+      </header>
+      <div id="result" class="box"></div>
+      <div id="options" class="box">
+      <form id="connectionForm">
+          <input type="text" id="inputHost" name="inputHost" defaultValue="192.168.0.15" value="192.168.0.15">
+          <input type="text" id="inputPort" name="inputPort" defaultValue="1884" value="1884">
+          <input type="submit" id="buttonSubmit" value="Connect">
+      </form>
+      <form id="topicForm">
+          <input type="text" id="topicFilter" name="topicFilter" defaultValue="$SYS/broker/clients/#" value="$SYS/broker/clients/#">
+          <input type="submit" id="buttonSubmit" value="Subscribe">
+      </form>
+      </div>
+      <div id="terminal" class="box"></div>
+      <footer id="footer" class="box">by smmilut 2020</footer>
+    </div>
+    <script src="node_modules/paho-mqtt/paho-mqtt-min.js" type="text/javascript"></script>
+    <script src="miniquette.js" type="module"></script>
+  </body>
+</html>
+

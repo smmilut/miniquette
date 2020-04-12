@@ -14,6 +14,15 @@
 .topicValue {
   color: white;
   margin-left: 10px;
+  animation-name: pulse;
+  animation-duration: 5s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes pulse {
+  from {color: white;}
+  to {color: grey;}
 }
 
 

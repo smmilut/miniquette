@@ -68,6 +68,14 @@ function setNodeValue(elNode, value) {
     elNode.appendChild(elNodeValue);
   }
   elNodeValue.innerText = value;
+  restart_animation(elNodeValue);
+}
+
+function restart_animation(el) {
+  /* restart CSS animation */
+  el.style.animation = 'none';
+  el.offsetHeight; // trigger reflow
+  el.style.animation = null; 
 }
 
 function updateTopic(topic, value) {

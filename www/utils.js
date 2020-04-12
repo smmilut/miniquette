@@ -1,3 +1,4 @@
+/* jshint module:true */
 /*
  * Utilities module
  */

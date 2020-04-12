@@ -1,11 +1,8 @@
 /* jshint module:true */
 
-const terminal = {
-  element : document.getElementById("terminal"),
-  write : function(content) {
-    this.element.innerHTML += "<p class=\"termentry\"># " + content + "</p>";
-  }
-};
+import * as utils from './utils.js';
+
+const terminal = utils.createTerminal(document.getElementById("terminal"));
 
 terminal.write("Terminal output on " + Date());
 
@@ -68,14 +65,7 @@ function setNodeValue(elNode, value) {
     elNode.appendChild(elNodeValue);
   }
   elNodeValue.innerText = value;
-  restart_animation(elNodeValue);
-}
-
-function restart_animation(el) {
-  /* restart CSS animation */
-  el.style.animation = 'none';
-  el.offsetHeight; // trigger reflow
-  el.style.animation = null; 
+  utils.restart_animation(elNodeValue);
 }
 
 function updateTopic(topic, value) {

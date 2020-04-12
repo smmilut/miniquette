@@ -65,7 +65,7 @@ function setNodeValue(elNode, value) {
     elNode.appendChild(elNodeValue);
   }
   elNodeValue.innerText = value;
-  utils.restart_animation(elNodeValue);
+  utils.CssUtils.restart_animation(elNodeValue);
 }
 
 function updateTopic(topic, value) {

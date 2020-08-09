@@ -5,6 +5,7 @@ import * as utils from './utils.js';
 export const tree = (function buildmodule_tree() {
   // where to start to display the result :
   let elRoot = document.getElementById("result");
+  let historySizeStr = 3;
   
   function getOrCreateNode(elParent, topicPath, topicNode) {
     /* create HTML tree node, if necessary */
@@ -28,17 +29,48 @@ export const tree = (function buildmodule_tree() {
 
   function setNodeValue(elNode, value) {
     /* set the MQTT value of the HTML node */
-    let elNodeValue = elNode.getElementsByClassName("topicValue")[0];
-    if(elNodeValue == undefined) {
-      /* the HTML for the value of the topic doesn't exist yet, create it */
-      elNodeValue = document.createElement("span");
-      elNodeValue.classList.add("topicValue");
+    
+    let elNodeValues = elNode.getElementsByClassName("topicValues")[0];
+    if(elNodeValues == undefined) {
+      /* the HTML for the values list of the topic doesn't exist yet, create it */
+      elNodeValues = document.createElement("div");
+      elNodeValues.classList.add("topicValues");
       // add to the tree
-      elNode.appendChild(elNodeValue);
+      elNode.appendChild(elNodeValues);
     }
+    
+    /* add/cycle value to history */
+    // remove previous
+    //while(elNodeValues.getElementsByClassName("historyValue").length >= historySizeStr) {
+      //elNodeValues.removeChild(elNodeValues.childNodes[0]);
+    //}
+    let elListHisto = elNodeValues.getElementsByClassName("historyValue");
+    for(let i = 0; i < elListHisto.length; i++) {
+      let el = elListHisto[i];
+      if(elListHisto.length - i >= historySizeStr) {
+        // remove previous
+        elNodeValues.removeChild(el);
+      } else {
+        // fade old ones
+        el.classList.add("oldHistory");
+      }
+    }
+    // add new
+    let elHisto = document.createElement("div");
+    elHisto.classList.add("historyValue");
+    let elNodeValue = document.createElement("span");
+    elNodeValue.classList.add("topicValue");
+    let elNodeDate = document.createElement("span");
+    elNodeDate.classList.add("valueDate");
+    // add to the tree
+    elHisto.appendChild(elNodeValue);
+    elHisto.appendChild(elNodeDate);
+    elNodeValues.appendChild(elHisto);
     // update MQTT value
     elNodeValue.innerText = value;
-    utils.CssUtils.restart_animation(elNodeValue);
+    
+    let dateNowStr = utils.DateUtils.getTimestampStr(new Date());
+    elNodeDate.innerText = dateNowStr;
   }
 
   function updateTopic(topic, value) {

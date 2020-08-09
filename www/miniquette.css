@@ -11,6 +11,11 @@
   color: grey;
 }
 
+@keyframes pulse {
+  from {color: white;}
+  to {color: grey;}
+}
+
 .topicValue {
   color: white;
   margin-left: 10px;
@@ -20,10 +25,20 @@
   animation-fill-mode: forwards;
 }
 
-@keyframes pulse {
-  from {color: white;}
-  to {color: grey;}
+.valueDate {
+  color: white;
+  margin-left: 10px;
+  animation-name: pulse;
+  animation-duration: 5s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
 }
+
+.oldHistory {
+  color: grey;
+  font-size: 80%;
+}
+
 
 
 #terminal {

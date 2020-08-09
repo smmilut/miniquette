@@ -3,11 +3,14 @@
 import * as utils from './utils.js';
 
 export const tree = (function buildmodule_tree() {
+  // where to start to display the result :
+  let elRoot = document.getElementById("result");
+  
   function getOrCreateNode(elParent, topicPath, topicNode) {
     /* create HTML tree node, if necessary */
     let elNode = document.getElementById(topicPath);
-    if(elNode == null) {
-      // the HTML for the node doesn't exist yet, create it
+    if(elNode == undefined) {
+      /* the HTML for the node doesn't exist yet, create it */
       elNode = document.createElement("div");
       elNode.setAttribute("id", topicPath);
       elNode.classList.add("topicNode");
@@ -16,6 +19,7 @@ export const tree = (function buildmodule_tree() {
       elNodeName.classList.add("topicName");
       elNodeName.innerText = topicNode;
       
+      // add to the tree
       elNode.appendChild(elNodeName);
       elParent.appendChild(elNode);
     }
@@ -25,27 +29,29 @@ export const tree = (function buildmodule_tree() {
   function setNodeValue(elNode, value) {
     /* set the MQTT value of the HTML node */
     let elNodeValue = elNode.getElementsByClassName("topicValue")[0];
-    if(elNodeValue == null) {
-      // the HTML for the value of the topic doesn't exist yet, create it
+    if(elNodeValue == undefined) {
+      /* the HTML for the value of the topic doesn't exist yet, create it */
       elNodeValue = document.createElement("span");
       elNodeValue.classList.add("topicValue");
+      // add to the tree
       elNode.appendChild(elNodeValue);
     }
+    // update MQTT value
     elNodeValue.innerText = value;
     utils.CssUtils.restart_animation(elNodeValue);
   }
 
   function updateTopic(topic, value) {
     /* place the topic inside a tree and display its value */
-    // where to start to display the result :
-    let elParent = document.getElementById("result");
-    // split the topic in its components : "nodes" of the tree
-    const topicNodes = topic.split("/");
     
+    // where to start to display the result :
+    let elParent = elRoot;
+    // split the topic in its components : "nodes" of the tree
+    let topicNodes = topic.split("/");
+    
+    // init loop
     let topicPath = "";
     let elNode;
-    let elNodeName;
-    let elValue;
     
     for(const topicNode of topicNodes) {
       /* Iterate the components of the topic path :

@@ -18,7 +18,7 @@ export const CssUtils = (function build_CssUtils() {
     /* restart CSS animation */
     el.style.animation = 'none';
     el.offsetHeight; // magic to trigger reflow
-    el.style.animation = null; 
+    el.style.animation = null;  // must be null, not undefined, because magic
   }
   
   return {

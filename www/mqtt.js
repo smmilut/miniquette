@@ -40,11 +40,11 @@ const getTopicsData = function(formElement) {
 
 
 const MqttClient = (function build_MqttClient() {
-  let pahoClient = null;
+  let pahoClient = undefined;
 
   function pahoConnect(host, port) {
     /* Create a client instance */
-    if(pahoClient != null) {
+    if(pahoClient != undefined) {
       terminal.write("Disconnecting existing client.");
       pahoClient.disconnect();
     }
@@ -85,12 +85,12 @@ const MqttClient = (function build_MqttClient() {
 
   function pahoSubscribe(topicFilter) {
     /* subscribe to the topic filter */
-    if(pahoClient == null) {
+    if(pahoClient == undefined) {
       terminal.write("ERROR : Couldn't subscribe : connection not initialized.");
       return;
     }
-    terminal.write("... subscribed.");
     pahoClient.subscribe(topicFilter);
+    terminal.write("... subscribed.");
   }
 
   return {

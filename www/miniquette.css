@@ -56,6 +56,15 @@
   animation-fill-mode: forwards;
 }
 
+.changeSymbol {
+  color: white;
+  margin-left: 10px;
+  animation-name: pulse;
+  animation-duration: 5s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
 .oldHistory {
   color: grey;
   font-size: 80%;

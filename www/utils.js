@@ -36,6 +36,7 @@ export const DateUtils = (function build_DateUtils() {
   }
 
   function getTimestampStr(d) {
+    /* return formatted time string */
     var h = padZero(d.getHours(), 2);
     var m = padZero(d.getMinutes(), 2);
     var s = padZero(d.getSeconds(), 2);

@@ -5,6 +5,7 @@ import * as utils from './utils.js';
 export const tree = (function buildmodule_tree() {
   // where to start to display the result :
   let elRoot = document.getElementById("result");
+  // how many history entries to display for string values
   let historySizeStr = 3;
   
   function getOrCreateNode(elParent, topicPath, topicNode) {
@@ -27,6 +28,38 @@ export const tree = (function buildmodule_tree() {
     return elNode;
   }
 
+  function getChangeSymbol(valueStr, previousStr) {
+    /* return the HTML for the symbol representing how the MQTT value has changed :
+     *  - increased
+     *  - decreased
+     *  - constant
+     *  - no previous value
+     *  - text value 
+     */
+    let elChangeSymbol = document.createElement("span");
+    elChangeSymbol.classList.add("changeSymbol");
+    let changeSymbol = "";
+    let valueNum = parseFloat(valueStr);
+    let previousValueNum = parseFloat(previousStr);
+    
+    if(Number.isNaN(valueNum)) {
+      changeSymbol = "☰";
+    } else if(Number.isNaN(previousValueNum)) {
+      changeSymbol = "◇";
+    } else {
+      let delta = valueNum - previousValueNum;
+      if(delta < 0) {
+        changeSymbol = "↘";
+      } else if (delta > 0) {
+        changeSymbol = "↗";
+      } else {
+        changeSymbol = "→";
+      }
+    }
+    elChangeSymbol.innerText = changeSymbol;
+    return elChangeSymbol;
+  }
+  
   function setNodeValue(elNode, value) {
     /* set the MQTT value of the HTML node */
     
@@ -39,11 +72,8 @@ export const tree = (function buildmodule_tree() {
       elNode.appendChild(elNodeValues);
     }
     
+    let previousValue;
     /* add/cycle value to history */
-    // remove previous
-    //while(elNodeValues.getElementsByClassName("historyValue").length >= historySizeStr) {
-      //elNodeValues.removeChild(elNodeValues.childNodes[0]);
-    //}
     let elListHisto = elNodeValues.getElementsByClassName("historyValue");
     for(let i = 0; i < elListHisto.length; i++) {
       let el = elListHisto[i];
@@ -54,7 +84,13 @@ export const tree = (function buildmodule_tree() {
         // fade old ones
         el.classList.add("oldHistory");
       }
+      // get previous MQTT value
+      previousValue = el.getElementsByClassName("topicValue")[0].innerText;
     }
+    
+    // check if value increased/decreased
+    let elChangeSymbol = getChangeSymbol(value, previousValue);
+    
     // add new
     let elHisto = document.createElement("div");
     elHisto.classList.add("historyValue");
@@ -64,6 +100,7 @@ export const tree = (function buildmodule_tree() {
     elNodeDate.classList.add("valueDate");
     // add to the tree
     elHisto.appendChild(elNodeValue);
+    elHisto.appendChild(elChangeSymbol);
     elHisto.appendChild(elNodeDate);
     elNodeValues.appendChild(elHisto);
     // update MQTT value

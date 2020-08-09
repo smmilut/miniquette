@@ -1,10 +1,32 @@
 /* MQTT nodes */
 .topicNode {
   margin-left: 30px;
+  margin-right: 2px;
   padding-left: 5px;
   border-left-style: solid;
+  border-right-style: solid;
+  border-top-style: solid;
   border-color: grey;
-  border-width: 2px;
+  border-width: 1px 1px 1px 2px;
+}
+
+
+.topicNode:after {
+  /* clear the float used to display values side by side with node name */
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.topicValues {
+  /* float to display values side by side with node name */
+  float: right;
+}
+
+.historyValue {
+  /* align history to the right */
+  display: flex;
+  justify-content: flex-end;
 }
 
 .topicName {

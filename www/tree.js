@@ -1,6 +1,7 @@
 /* jshint module:true */
 
 import * as utils from './utils.js';
+import * as charts from './charts.js';
 
 export const tree = (function buildmodule_tree() {
   // where to start to display the result :
@@ -109,14 +110,18 @@ export const tree = (function buildmodule_tree() {
     let dateNowStr = utils.DateUtils.getTimestampStr(new Date());
     elNodeDate.innerText = dateNowStr;
   }
-
-  function updateTopic(topic, value) {
+  
+  function updateChart(topicPath, data) {
+    charts.charts.updateChart(topicPath, data);
+  }
+  
+  function updateTopic(data) {
     /* place the topic inside a tree and display its value */
     
     // where to start to display the result :
     let elParent = elRoot;
     // split the topic in its components : "nodes" of the tree
-    let topicNodes = topic.split("/");
+    let topicNodes = data.topic.split("/");
     
     // init loop
     let topicPath = "";
@@ -136,7 +141,12 @@ export const tree = (function buildmodule_tree() {
       topicPath += "/";
     }
     // only the final node corresponds to the topic and holds a value
-    setNodeValue(elNode, value);
+    setNodeValue(elNode, data.value);
+    
+    // remove last "/"
+    topicPath = topicPath.substring(0, topicPath.length - 1);
+    // create or update chart
+    updateChart(topicPath, data);
   }
 
   return {

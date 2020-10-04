@@ -2,9 +2,11 @@
   "name": "miniquette",
   "version": "1.0.0",
   "description": "display MQTT data from websocket",
+  "private": true,
   "author": "smmilut",
   "license": "MIT",
   "dependencies": {
+    "chart.js": "^2.9.3",
     "paho-mqtt": "^1.1.0"
   }
 }

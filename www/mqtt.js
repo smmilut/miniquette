@@ -1,45 +1,11 @@
 /* jshint module:true */
 
 import * as utils from './utils.js';
-import * as tree from './tree.js';
 
 const terminal = utils.createTerminal(document.getElementById("terminal"));
 
-terminal.write("Terminal output on " + Date());
 
-
-/*  Callback for the Connection form  */
-document.getElementById('connectionForm').onsubmit = function(e) {
-  // stop the regular form submission
-  e.preventDefault();
-  getConnectionFormData(this);
-};
-
-const getConnectionFormData = function(formElement) {
-  // get data
-  const host = document.getElementById('inputHost').value;
-  const port = parseInt(document.getElementById('inputPort').value);
-  terminal.write("Asking to connect to " + host + ":" + (port) + " ...");
-  MqttClient.connect(host, port);
-};
-
-/*  Callback for the Subscribe form  */
-document.getElementById('topicForm').onsubmit = function(e) {
-  // stop the regular form submission
-  e.preventDefault();
-  getTopicsData(this);
-};
-
-const getTopicsData = function(formElement) {
-  // get data
-  const topicFilter = document.getElementById('topicFilter').value;
-  terminal.write("Asking to subscribe to " + topicFilter);
-  MqttClient.subscribe(topicFilter);
-};
-
-
-
-const MqttClient = (function build_MqttClient() {
+export const MqttClient = (function build_MqttClient() {
   let pahoClient = undefined;
 
   function pahoConnect(host, port) {
@@ -56,17 +22,16 @@ const MqttClient = (function build_MqttClient() {
       terminal.write("... connected.");
     }
     
-    function onMessageArrived(message) {
-      /* action when a new MQTT message arrives */
-      const topic = message.destinationName;
-      const value = message.payloadString;
-      tree.tree.updateTopic(topic, value);
+    function defaultMessageArrived(message) {
+      /* default action when a new MQTT message arrives */
+      terminal.write("Message not handled.");
     }
     
     function onConnectionLost(responseObject) {
       /* called when the client loses its connection */
       terminal.write("Connection Lost");
       if (responseObject.errorCode !== 0) {
+        console.log("error code (" + (responseObject.errorCode) + "): " + responseObject.errorMessage);
         terminal.write("error code (" + (responseObject.errorCode) + "): " + responseObject.errorMessage);
       }
     }
@@ -76,19 +41,30 @@ const MqttClient = (function build_MqttClient() {
     
     // set callback handlers
     pahoClient.onConnectionLost = onConnectionLost;
-    pahoClient.onMessageArrived = onMessageArrived;
+    pahoClient.onMessageArrived = defaultMessageArrived;
     
     // connect the client
     terminal.write("Connecting to " + host + ":" + (port) + " ...");
     pahoClient.connect({onSuccess:onConnect});
   }
 
-  function pahoSubscribe(topicFilter) {
+  function pahoSubscribe(topicFilter, callbackMessageArrived) {
     /* subscribe to the topic filter */
     if(pahoClient == undefined) {
       terminal.write("ERROR : Couldn't subscribe : connection not initialized.");
       return;
     }
+    
+    pahoClient.onMessageArrived = function onMessageArrived(message) {
+      /* action when a new MQTT message arrives */
+      const data = {
+        topic : message.destinationName,
+        value : message.payloadString,
+        date : new Date()
+      }
+      callbackMessageArrived(data);
+    }
+    
     pahoClient.subscribe(topicFilter);
     terminal.write("... subscribed.");
   }

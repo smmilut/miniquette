@@ -21,7 +21,7 @@ Currently a very basic proof of concept. Works with manual steps and no frills.
 
 This project depends on :
 * the [paho-mqtt](https://www.eclipse.org/paho/clients/js/) library for connecting to a MQTT broker
-* the [Chart.js]()https://www.chartjs.org/) library for charting the numerical values
+* the [Chart.js](https://www.chartjs.org/) library for charting the numerical values
 Import the Javascript dependencies :
 At the root folder, do :
 ```sh

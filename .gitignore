@@ -1,2 +1,4 @@
+ansible/ansible.log
+ansible/hosts*
 # ignore imported dependencies
 node_modules/

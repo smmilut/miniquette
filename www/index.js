@@ -30,7 +30,6 @@ const getTopicsData = function(formElement) {
 
 
 (function main() {
-  console.log(location);
   if(location.hostname) {
     /* we are hosted on a server, we assume that the MQTT broker runs on the same machine */
     document.getElementById('inputHost').defaultValue = location.hostname;

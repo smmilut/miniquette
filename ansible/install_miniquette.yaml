@@ -1,0 +1,58 @@
+---
+- hosts: raspi
+  become: yes
+  tasks:
+  - name: Update repositories cache
+    apt:
+      update_cache: yes
+      cache_valid_time: 3600
+  - name: Install the list of packages
+    apt:
+      name: "{{ packages }}"
+    vars:
+      packages:
+      - nginx
+  - name: Remove nginx default site
+    file:
+      path: /etc/nginx/sites-enabled/default
+      state: absent
+  - name: Send the website files with owner and permission
+    copy:
+      src: ../www/
+      dest: /var/www/miniquette
+      owner: root
+      group: root
+      mode: u=rw,g=r,o=r
+    notify:
+    - reload nginx
+  - name: Send the nginx file with owner and permission
+    copy:
+      src: ../nginx/miniquette
+      dest: /etc/nginx/sites-available/
+      owner: root
+      group: root
+      mode: u=rw,g=r,o=r
+    notify:
+    - reload nginx
+  - name: Enable site
+    file:
+      src: /etc/nginx/sites-available/miniquette
+      dest: /etc/nginx/sites-enabled/miniquette
+      state: link
+    notify:
+    - reload nginx
+  - name: Force all notified handlers to run at this point, not waiting for normal sync points
+    meta: flush_handlers
+  - name: Check that a site returns a status 200 and fail if the word miniquette is not in the page contents
+    uri:
+      url: 'http://{{ ansible_ssh_host }}'
+      return_content: yes
+    register: this
+    failed_when: "'miniquette' not in this.content"
+  handlers:
+    - name: reload nginx
+      systemd:
+        name: nginx.service
+        state: reloaded
+
+...

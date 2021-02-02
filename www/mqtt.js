@@ -6,7 +6,19 @@ const terminal = utils.createTerminal(document.getElementById("terminal"));
 
 
 export const MqttClient = (function build_MqttClient() {
+  const maxClientIdLength = 23;  // from Paho MQTT documentation
   let pahoClient = undefined;
+
+  function generateClientId() {
+    /* generate a fairly unique client Id to avoid getting disconnected when connecting from multiple sources */
+    let name = "miniq";
+    let timeString = (new Date()).getTime().toString();
+    let randomString = (Math.floor(Math.random()* Math.pow(10, maxClientIdLength))).toString(16);
+    let clientId = name + timeString + "-" + randomString;
+    clientId = clientId.slice(0, maxClientIdLength);
+    terminal.write("clientId = " + clientId);
+    return clientId;
+  }
 
   function pahoConnect(host, port) {
     /* Create a client instance */
@@ -37,7 +49,7 @@ export const MqttClient = (function build_MqttClient() {
     }
     
     // create Client
-    pahoClient = new Paho.Client(host, port, "miniquette");
+    pahoClient = new Paho.Client(host, port, generateClientId());
     
     // set callback handlers
     pahoClient.onConnectionLost = onConnectionLost;

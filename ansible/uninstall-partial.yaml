@@ -1,0 +1,31 @@
+---
+- hosts: vm_raspi_dev
+  become: yes
+  tasks:
+  - name: Disable nginx site
+    file:
+      path: /etc/nginx/sites-enabled/miniquette
+      state: absent
+    notify:
+    - reload nginx
+  - name: Remove the nginx file
+    file:
+      path: /etc/nginx/sites-available/miniquette
+      state: absent
+    notify:
+    - reload nginx
+  - name: Remove website files folder
+    file:
+      path: /var/www/miniquette
+      state: absent
+    notify:
+    - reload nginx
+  - name: Force all notified handlers to run at this point, not waiting for normal sync points
+    meta: flush_handlers
+  handlers:
+    - name: reload nginx
+      systemd:
+        name: nginx.service
+        state: reloaded
+
+...

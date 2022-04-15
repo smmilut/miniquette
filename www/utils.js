@@ -1,30 +1,20 @@
-/* jshint module:true */
-/*
- * Utilities module
- */
-
-export const createTerminal = function createTerminalFunc(el) {
-  return {
-    element : el,
-    write : function(content) {
-      this.element.innerHTML += "<p class=\"termentry\"># " + content + "</p>";
-    }
-  };
+const dictProto = {
+  init() {
+    this.content = Object.create(null);
+  },
+  get(key) {
+    return this.content[key];
+  },
+  set(key, value) {
+    this.content[key] = value;
+  },
 };
 
-
-export const CssUtils = (function build_CssUtils() {
-  function restart_animation(el) {
-    /* restart CSS animation */
-    el.style.animation = 'none';
-    el.offsetHeight; // magic to trigger reflow
-    el.style.animation = null;  // must be null, not undefined, because magic
-  }
-  
-  return {
-    restart_animation : restart_animation
-  };
-})();
+export function newDict() {
+  const d = Object.create(dictProto);
+  d.init();
+  return d;
+}
 
 export const DateUtils = (function build_DateUtils() {
   function padZero(x, n) {
@@ -43,9 +33,9 @@ export const DateUtils = (function build_DateUtils() {
     var ms = padZero(d.getMilliseconds(), 3);
     return h + ":" + m + ":" + s + "." + ms;
   }
-  
+
   return {
-    getTimestampStr : getTimestampStr
+    getTimestampStr: getTimestampStr
   };
 
 })();

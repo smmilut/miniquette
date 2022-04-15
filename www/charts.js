@@ -1,79 +1,84 @@
-/* jshint module:true */
+import * as ChartJs from './node_modules/chart.js/dist/Chart.bundle.js';
+import * as Utils from './utils.js';
 
-import * as chartJs from './node_modules/chart.js/dist/Chart.bundle.js';
+const chartsCache = Utils.newDict();
 
-export const charts = (function buildChartModule(){
-  const charts = Object.create(null);
-  
-  function getCreateChart(topicPath){
-    /*  get or create the chart */
-    let c = charts[topicPath];
-    if(c == undefined) {
-      /* chart doesn't exist, create it */
-      let elNode = document.getElementById(topicPath);
-      let elChartDiv = document.createElement("div");
-      let elChartCanvas = document.createElement("canvas");
-      let canvasContext = elChartCanvas.getContext('2d');
-      c = new Chart(canvasContext, {
-          type: 'line',
-          options: {
-              scales: {
-                  xAxes: [{
-                      type: 'time',
-                      distribution: 'linear',
-                      gridLines: {
-                        display: false,
-                      },
-                  }],
-                  yAxes: [{
-                      gridLines: {
-                        display: false,
-                      },
-                  }],
-              },
-              legend: {
-                display: false,
-              },
-              elements: {
-                line: {
-                  fill: false,
-                  borderWidth: 1,
-                },
-              },
+export function init() {
+  chartsCache.init();
+}
+
+function createChart() {
+  /** All charts have the same configuration.
+   * WARNING : it must be a different configuration object every time.
+   */
+  const chartConfig = {
+    type: "line",
+    options: {
+      scales: {
+        xAxes: [{
+          type: "time",
+          distribution: "linear",
+          gridLines: {
+            display: false,
           },
-          data: {
-            datasets: [{
-              backgroundColor: 'grey',
-              borderColor: 'white',
-              cubicInterpolationMode: 'monotone',
-              pointRadius: 2,
-            }],
+        }],
+        yAxes: [{
+          gridLines: {
+            display: false,
           },
-      });
-      charts[topicPath] = c;
-      elChartDiv.appendChild(elChartCanvas);
-      elNode.appendChild(elChartDiv);
-    }
-    return c;
-  }
-  
-  function updateChart(topicPath, data) {
-    /* update the chart, and create it if necessary */
-    let valueNum = parseFloat(data.value);
-    if(!Number.isNaN(valueNum)) {
-      /* it's number, let's make a chart */
-      let c = getCreateChart(topicPath);
-      c.data.datasets[0].data.push({ t: data.date, y: valueNum});
-      c.update();
-      return c;
-    } else {
-      return;
-    }
-  }
-  
+        }],
+      },
+      legend: {
+        display: false,
+      },
+      elements: {
+        line: {
+          fill: false,
+          borderWidth: 1,
+        },
+      },
+    },
+    data: {
+      datasets: [{
+        backgroundColor: "grey",
+        borderColor: "white",
+        cubicInterpolationMode: "monotone",
+        pointRadius: 2,
+      }],
+    },
+  };
+  const chartCanvasEl = document.createElement("canvas");
+  const canvasContext = chartCanvasEl.getContext("2d");
   return {
-    getCreateChart: getCreateChart,
-    updateChart: updateChart,
-  }
-})();
+    chart: new Chart(canvasContext, chartConfig),
+    htmlEl: chartCanvasEl,
+  };
+}
 
+function getCreateChart(topicPath) {
+  let chart = chartsCache.get(topicPath);
+  if (chart === undefined) {
+    /* chart doesn't exist, create it */
+    const newChart = createChart();
+    chart = newChart.chart;
+    chartsCache.set(topicPath, chart);
+    const elNode = document.getElementById(topicPath);
+    const elChartDiv = document.createElement("div");
+    elChartDiv.appendChild(newChart.htmlEl);
+    elNode.appendChild(elChartDiv);
+  }
+  return chart;
+}
+
+/** update the chart, and create it if necessary */
+export function updateChart(topicPath, data) {
+  const valueNum = parseFloat(data.value);
+  if (Number.isNaN(valueNum)) {
+    return;
+  } else {
+    /* it's number, let's make a chart */
+    const chart = getCreateChart(topicPath);
+    chart.data.datasets[0].data.push({ t: data.date, y: valueNum });
+    chart.update();
+  }
+}

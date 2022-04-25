@@ -16,30 +16,23 @@ export function newDict() {
   return d;
 }
 
-export const DateUtils = (function build_DateUtils() {
-  function padZero(x, n) {
-    /* pad n zeroes to the left of x if necessary */
-    while (x.toString().length < n) {
-      x = "0" + x;
-    }
-    return x;
-  }
+/**
+ * @param {*} x 
+ * @param {Number} numZeros 
+ * @returns {String} padded with "0"
+ */
+export function padZeros(x, numZeros) {
+  return x.toString().padStart(numZeros, "0");
+}
 
-  function getTimestampStr(d) {
-    /* return formatted time string */
-    var h = padZero(d.getHours(), 2);
-    var m = padZero(d.getMinutes(), 2);
-    var s = padZero(d.getSeconds(), 2);
-    var ms = padZero(d.getMilliseconds(), 3);
-    return h + ":" + m + ":" + s + "." + ms;
-  }
-
-  return {
-    getTimestampStr: getTimestampStr
-  };
-
-})();
-
+/** return formatted time string */
+export function getTimestampStr(d) {
+  const h = padZeros(d.getHours(), 2);
+  const m = padZeros(d.getMinutes(), 2);
+  const s = padZeros(d.getSeconds(), 2);
+  const ms = padZeros(d.getMilliseconds(), 3);
+  return `${h}:${m}:${s}.${ms}`;
+}
 export function getUrlParameter(paramKey) {
   const urlParameters = new URLSearchParams(window.location.search);
   return urlParameters.get(paramKey);

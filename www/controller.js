@@ -6,6 +6,7 @@ import * as Charts from './charts.js';
 export function init() {
     terminalWrite("Terminal output on " + Date());
     Input.init();
+    Tree.init();
     Charts.init();
 }
 

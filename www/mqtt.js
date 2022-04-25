@@ -24,7 +24,7 @@ function disconnectIfExists() {
 function replaceClient(host, port) {
   const clientId = generateClientId();
   Controller.terminalWrite("clientId = " + clientId);
-  pahoClient = new Paho.Client(host, port, clientId);
+  pahoClient = new window.Paho.Client(host, port, clientId);
 }
 
 function setDefaultHandlers() {

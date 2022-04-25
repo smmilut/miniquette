@@ -6,11 +6,14 @@ export function init() {
   chartsCache.init();
 }
 
-function createChart() {
-  /** All charts have the same configuration.
-   * WARNING : it must be a different configuration object every time.
-   */
-  const chartConfig = {
+/**
+ * All charts have the same configuration.
+ * WARNING : This exists as a function because 
+ *   it must be a different configuration object every time.
+ * @returns {Object} a copy of the common chart configuration
+ */
+function getChartConfig() {
+  return {
     type: "line",
     options: {
       scales: {
@@ -49,6 +52,10 @@ function createChart() {
       }],
     },
   };
+}
+
+function createChart() {
+  const chartConfig = getChartConfig();
   const htmlEl = document.createElement("canvas");
   const canvasContext = htmlEl.getContext("2d");
   const chart = new window.Chart(canvasContext, chartConfig);
@@ -81,12 +88,7 @@ export function updateChart(topicPath, data) {
   } else {
     /* it's number, let's make a chart */
     const chart = getCreateChart(topicPath);
-    // console.log(chart, chart.data, chart.data.datasets[0], chart.data.datasets[0].data);
     chart.data.datasets[0].data.push({ x: data.date, y: valueNum });
-    // chart.data.datasets.forEach(function fn(dataset) {
-    //   console.log(dataset.data);
-    //   dataset.data.push({ t: data.date, y: valueNum });
-    // });
     chart.update();
   }
 }

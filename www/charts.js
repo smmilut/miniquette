@@ -1,5 +1,4 @@
-import * as ChartJs from './node_modules/chart.js/dist/Chart.bundle.js';
-import * as Utils from './utils.js';
+import * as Utils from "./utils.js";
 
 const chartsCache = Utils.newDict();
 
@@ -15,21 +14,23 @@ function createChart() {
     type: "line",
     options: {
       scales: {
-        xAxes: [{
+        x: {
           type: "time",
           distribution: "linear",
-          gridLines: {
+          grid: {
             display: false,
           },
-        }],
-        yAxes: [{
-          gridLines: {
+        },
+        y: {
+          grid: {
             display: false,
           },
-        }],
+        },
       },
-      legend: {
-        display: false,
+      plugins: {
+        legend: {
+          display: false,
+        },
       },
       elements: {
         line: {
@@ -44,14 +45,16 @@ function createChart() {
         borderColor: "white",
         cubicInterpolationMode: "monotone",
         pointRadius: 2,
+        data: [],
       }],
     },
   };
-  const chartCanvasEl = document.createElement("canvas");
-  const canvasContext = chartCanvasEl.getContext("2d");
+  const htmlEl = document.createElement("canvas");
+  const canvasContext = htmlEl.getContext("2d");
+  const chart = new window.Chart(canvasContext, chartConfig);
   return {
-    chart: new Chart(canvasContext, chartConfig),
-    htmlEl: chartCanvasEl,
+    chart,
+    htmlEl,
   };
 }
 
@@ -78,7 +81,12 @@ export function updateChart(topicPath, data) {
   } else {
     /* it's number, let's make a chart */
     const chart = getCreateChart(topicPath);
-    chart.data.datasets[0].data.push({ t: data.date, y: valueNum });
+    // console.log(chart, chart.data, chart.data.datasets[0], chart.data.datasets[0].data);
+    chart.data.datasets[0].data.push({ x: data.date, y: valueNum });
+    // chart.data.datasets.forEach(function fn(dataset) {
+    //   console.log(dataset.data);
+    //   dataset.data.push({ t: data.date, y: valueNum });
+    // });
     chart.update();
   }
 }

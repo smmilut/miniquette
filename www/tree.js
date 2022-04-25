@@ -95,22 +95,22 @@ function setNodeValue(elNode, value) {
   const elChangeSymbol = getChangeSymbolEl(value, previousValue);
 
   // add new
-  const elHisto = document.createElement("div");
-  elHisto.classList.add("historyValue");
   const elNodeValue = document.createElement("span");
   elNodeValue.classList.add("topicValue");
+  // update MQTT value
+  const elNodeValueText = document.createTextNode(value);
+  elNodeValue.appendChild(elNodeValueText);
   const elNodeDate = document.createElement("span");
   elNodeDate.classList.add("valueDate");
+  const dateNowStr = utils.DateUtils.getTimestampStr(new Date());
+  elNodeDate.innerText = dateNowStr;
   // add to the tree
+  const elHisto = document.createElement("div");
+  elHisto.classList.add("historyValue");
   elHisto.appendChild(elNodeValue);
   elHisto.appendChild(elChangeSymbol);
   elHisto.appendChild(elNodeDate);
   elNodeValues.appendChild(elHisto);
-  // update MQTT value
-  elNodeValue.innerText = value;
-
-  let dateNowStr = utils.DateUtils.getTimestampStr(new Date());
-  elNodeDate.innerText = dateNowStr;
 }
 
 /** place the topic inside a tree and display its value */

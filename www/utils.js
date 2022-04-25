@@ -39,3 +39,8 @@ export const DateUtils = (function build_DateUtils() {
   };
 
 })();
+
+export function getUrlParameter(paramKey) {
+  const urlParameters = new URLSearchParams(window.location.search);
+  return urlParameters.get(paramKey);
+}

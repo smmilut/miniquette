@@ -1,23 +1,34 @@
+import * as Utils from "./utils.js";
 import * as Controller from "./controller.js";
 
 /** Callback for the Connection form */
-function getConnectionFormData() {
-    // get form data
-    const host = document.getElementById("inputHost").value;
-    const port = parseInt(document.getElementById("inputPort").value);
+function getConnectionFormData({
+    inputHostId = "inputHost",
+    inputPortId = "inputPort",
+} = {}) {
+    return {
+        host: document.getElementById(inputHostId).value,
+        port: parseInt(document.getElementById(inputPortId).value),
+    };
+}
+function connectFormHost() {
+    const { host, port } = getConnectionFormData();
     Controller.connectHost(host, port);
 }
 
 /**  Callback for the Subscribe form  */
-function getTopicsData() {
+function getTopicsFormData({ topicFilterId = "topicFilter", } = {}) {
     // get form data
-    const topicFilter = document.getElementById("topicFilter").value;
+    return document.getElementById(topicFilterId).value;
+}
+
+function subscribeFormTopic() {
+    const topicFilter = getTopicsFormData();
     Controller.subscribeTopic(topicFilter);
-};
+}
 
 function getDefaultHost() {
-    const urlParameters = new URLSearchParams(window.location.search);
-    const urlParametersHost = urlParameters.get("host");
+    const urlParametersHost = Utils.getUrlParameter("host");
     if (urlParametersHost) {
         return urlParametersHost;
     } else if (location.hostname !== undefined && location.hostname.length > 0) {
@@ -29,8 +40,7 @@ function getDefaultHost() {
 }
 
 function getDefaultPort() {
-    const urlParameters = new URLSearchParams(window.location.search);
-    const urlParametersPort = urlParameters.get("port");
+    const urlParametersPort = Utils.getUrlParameter("port");
     if (urlParametersPort) {
         return urlParametersPort;
     } else {
@@ -55,13 +65,13 @@ export function init() {
     connectionFormEl.addEventListener("submit", function onConnectionSubmit(event) {
         // stop the regular form submission
         event.preventDefault();
-        getConnectionFormData();
+        connectFormHost();
     });
 
     const topicFormEl = document.getElementById("topicForm");
     topicFormEl.addEventListener("submit", function onSubscribeSubmit(event) {
         // stop the regular form submission
         event.preventDefault();
-        getTopicsData();
+        subscribeFormTopic();
     });
 }
